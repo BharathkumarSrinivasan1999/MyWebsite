@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bharathkumar Srinivasan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    header.parallax {
+      background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=fit&w=1470&q=80');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      color: #333;
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #loading-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .interactive-list-item {
+        transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+    .interactive-list-item:hover {
+        transform: translateX(5px);
+        color: #3b82f6;
+    }
+
+    .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hover effect for navigation links */
+    .sticky-nav a {
+        transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    }
+    .sticky-nav a:hover {
+        color: #3b82f6; /* Tailwind blue-600 */
+        transform: translateY(-2px);
+    }
+
+
+    .certification-badge {
+        height: 30px;
+        vertical-align: middle;
+        margin-left: 10px;
+    }
+
+    #mouse-trail-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .skill-tag {
+        display: inline-block;
+        background-color: #e0e7ff;
+        color: #4338ca;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        margin: 0.25rem;
+        white-space: nowrap;
+        transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; /* Added transform */
+    }
+    .skill-tag:hover {
+        background-color: #c7d2fe;
+        transform: scale(1.05); /* Scale up slightly on hover */
+    }
+
+    .timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 20px;
+        width: 3px;
+        background-color: #3b82f6;
+        z-index: 1;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 30px;
+        padding-left: 60px;
+        z-index: 2;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 10px;
+        width: 20px;
+        height: 20px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        z-index: 2;
+    }
+
+    .timeline-date {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 5px;
+    }
+
+    .timeline-content {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-content h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .timeline-content ul {
+        list-style: disc;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    .timeline-content ul li {
+        margin-bottom: 5px;
+    }
+
+    .certifications-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .certifications-list li {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Added transition */
+    }
+
+    .certifications-list li:hover {
+        transform: translateX(10px); /* Slide right on hover */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Increase shadow */
+    }
+
+    .certifications-list li a {
+        flex-grow: 1;
+        margin-right: 10px;
+        transition: color 0.3s ease-in-out; /* Added transition */
+    }
+
+    .certifications-list li a:hover {
+        color: #3b82f6; /* Change link color on hover */
+    }
+
+    /* Enhanced styling for certification icons */
+    .certifications-list li i {
+        margin-right: 15px; /* Increased margin */
+        color: #f59e0b; /* Initial color */
+        font-size: 1.8rem; /* Increased size */
+        transition: color 0.3s ease-in-out, transform 0.3s ease-in-out; /* Added transition */
+    }
+
+    .certifications-list li:hover i {
+        color: #d97706; /* Darker orange on list item hover */
+        transform: rotate(10deg); /* Rotate slightly on list item hover */
+    }
+
+
+    .awards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .award-item {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Added transition */
+    }
+
+    .award-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+    }
+
+    .award-item i {
+        font-size: 2.5rem;
+        color: #f97316;
+        margin-bottom: 10px;
+        transition: color 0.3s ease-in-out; /* Added transition */
+    }
+
+    .award-item:hover i {
+        color: #ea580c; /* Darker orange on hover */
+    }
+
+    .award-item p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .percentage {
+        font-size: 0.8rem;
+        font-weight: normal;
+        color: #6b7280;
+        margin-left: 8px;
+    }
+
+    .company-name {
+        font-size: 1rem;
+        color: #4b5563;
+        margin-top: 2px;
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+    }
+
+    .company-logo {
+        height: 20px;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+
+    .nav-photo {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+        object-fit: cover;
+    }
+
+    .nav-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Styling for the large header photo */
+    .header-photo {
+        height: 150px; /* Adjust size as needed */
+        width: 150px; /* Adjust size as needed */
+        border-radius: 50%; /* Make it round */
+        object-fit: cover; /* Ensure the photo covers the area */
+        border: 5px solid rgba(255, 255, 255, 0.8); /* White border */
+        margin-bottom: 1rem; /* Space below photo */
+    }
+
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            fadeIn: 'fadeIn 1s ease-in forwards',
+            slideUp: 'slideUp 1s ease-out forwards',
+            bounce: 'bounce 1s infinite',
+            spin: 'spin 1s linear infinite'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            bounce: {
+              '0%, 100%': {
+                transform: 'translateY(-25%)',
+                animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)'
+              },
+              '50%': {
+                transform: 'none',
+                animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
+              }
+            },
+            spin: {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AOS.init({
+        duration: 1000,
+        once: true,
+        delay: 200,
+      });
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+
+              document.querySelector(this.getAttribute('href')).scrollIntoView({
+                  behavior: 'smooth'
+              });
+          });
+      });
+
+      const canvas = document.getElementById('mouse-trail-canvas');
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+      const particleCount = 15;
+      const particleSize = 3;
+      const particleColor = 'rgba(59, 130, 246, 0.8)';
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+      });
+
+      class Particle {
+          constructor(x, y) {
+              this.x = x;
+              this.y = y;
+              this.size = Math.random() * particleSize + 1;
+              this.speedX = Math.random() * 2 - 1;
+              this.speedY = Math.random() * 2 - 1;
+              this.color = particleColor;
+              this.life = 1;
+              this.fadeSpeed = Math.random() * 0.01 + 0.005;
+          }
+
+          update() {
+              this.x += this.speedX;
+              this.y += this.speedY;
+              this.size -= 0.05;
+              this.life -= this.fadeSpeed;
+          }
+
+          draw() {
+              ctx.fillStyle = this.color;
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+              ctx.closePath();
+              ctx.fill();
+          }
+      }
+
+      window.addEventListener('mousemove', (event) => {
+          for (let i = 0; i < 2; i++) {
+             particles.push(new Particle(event.clientX, event.clientY));
+          }
+      });
+
+      function animate() {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          for (let i = 0; i < particles.length; i++) {
+              particles[i].update();
+              particles[i].draw();
+
+              if (particles[i].size <= 0.2 || particles[i].life <= 0) {
+                  particles.splice(i, 1);
+                  i--;
+              }
+          }
+          requestAnimationFrame(animate);
+      }
+
+      animate();
+
+    });
+
+    window.addEventListener('load', () => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+
+        const handleTransitionEnd = () => {
+            loadingScreen.remove();
+            document.body.style.overflow = 'auto';
+        };
+
+        loadingScreen.addEventListener('transitionend', handleTransitionEnd);
+
+        setTimeout(() => {
+            if (document.body.contains(loadingScreen)) {
+                handleTransitionEnd();
+            }
+        }, 600);
+      } else {
+         document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+</head>
+<body class="text-gray-800 font-sans">
+
+  <div id="loading-screen">
+    <i class="fas fa-spinner fa-spin text-4xl mr-3"></i>
+    Loading Portfolio...
+  </div>
+
+  <canvas id="mouse-trail-canvas"></canvas>
+
+  <nav class="sticky-nav p-4">
+      <div class="max-w-6xl mx-auto flex justify-between items-center">
+          <div class="flex items-center">
+              <img src="img/bharath.jpg" alt="Your Photo" class="nav-photo">
+              <span class="nav-name">Bharathkumar Srinivasan</span>
+          </div>
+          <div class="flex space-x-6">
+              <a href="#profile-summary" class="text-gray-800 hover:text-blue-600 transition duration-300">Summary</a>
+              <a href="#skills" class="text-gray-800 hover:text-blue-600 transition duration-300">Skills</a>
+              <a href="#experience" class="text-gray-800 hover:text-blue-600 transition duration-300">Experience</a>
+              <a href="#education" class="text-gray-800 hover:text-blue-600 transition duration-300">Education</a>
+              <a href="#certifications" class="text-gray-800 hover:text-blue-600 transition duration-300">Certifications</a>
+              <a href="#awards" class="text-gray-800 hover:text-blue-600 transition duration-300">Awards</a>
+          </div>
+      </div>
+  </nav>
+
+  <header class="parallax text-white p-10 text-center bg-opacity-80" data-aos="fade-down">
+    <div class="bg-black bg-opacity-50 p-6 rounded-lg inline-block animate-fadeIn">
+      <img src="img/bharath.jpg" alt="Your Photo" class="header-photo mx-auto" data-aos="zoom-in">
+      <h1 class="text-4xl font-bold animate-slideUp">Bharathkumar Srinivasan</h1>
+      <p class="text-lg animate-slideUp">Kinaxis Certified Solution Consultant | PCAP Certified Python Programmer</p>
+      <p class="animate-slideUp"><i class="fas fa-map-marker-alt mr-2"></i>Salem, Tamil Nadu</p>
+      <p class="animate-slideUp"><i class="fas fa-envelope mr-2"></i><a class="underline" href="mailto:er.bharathkumar1999@gmail.com">er.bharathkumar1999@gmail.com</a></p>
+      <p class="animate-slideUp"><i class="fas fa-phone mr-2"></i>8838587874</p>
+      <p class="animate-slideUp"><i class="fab fa-linkedin mr-2"></i><a class="underline" href="https://www.linkedin.com/in/bharathkumar-srinivasan-4640bb192" target="_blank">LinkedIn Profile</a></p>
+    </div>
+  </header>
+
+  <main class="p-6 max-w-6xl mx-auto space-y-12">
+
+    <section id="profile-summary" class="rounded shadow p-6 bg-gray-100" data-aos="fade-up">
+      <h2 class="text-2xl font-semibold mb-4"><i class="fas fa-info-circle mr-2"></i>Profile Summary</h2>
+      <p class="text-gray-700">
+        Experienced Solution and Integration Consultant with 4.5+ years in Rapid Response, Supply Chain Planning, and Data Administration. Skilled in techno-functional issue resolution, integration, data model changes, and authoring resources.
+      </p>
+    </section>
+
+    <section id="skills" class="rounded shadow p-6" data-aos="fade-up">
+      <h2 class="text-2xl font-semibold mb-4"><i class="fas fa-code mr-2"></i>Skills</h2>
+      <div class="space-y-4">
+        <div>
+          <h3 class="text-xl font-semibold mb-2"><i class="fas fa-cogs mr-2"></i>RapidResponse:</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Author Level 3</span>
+            <span class="skill-tag">Supply Planning</span>
+            <span class="skill-tag">Demand Planning</span>
+            <span class="skill-tag">Forecasting</span>
+            <span class="skill-tag">MPS</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2"><i class="fas fa-tools mr-2"></i>Tools:</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Azure</span>
+            <span class="skill-tag">Jira</span>
+            <span class="skill-tag">ServiceNow</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2"><i class="fas fa-laptop-code mr-2"></i>Programming:</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">C</span>
+            <span class="skill-tag">Core Java</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">SQL</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2"><i class="fas fa-brain mr-2"></i>Others:</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Analytical Skills</span>
+            <span class="skill-tag">AI Basics</span>
+            <span class="skill-tag">Machine Learning</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="rounded shadow p-6" data-aos="fade-up">
+      <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-briefcase mr-2"></i>Experience</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">Oct 2020 – Oct 2021</div>
+          <div class="timeline-content">
+            <h3>Assistant Systems Engineer - Trainee</h3>
+            <p class="company-name">Tata Consultancy Services <img src="img/tcs.jpg" alt="TCS Logo" class="company-logo"></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Oct 2021 – Mar 2022</div>
+          <div class="timeline-content">
+            <h3>Assistant Systems Engineer</h3>
+            <p class="company-name">Tata Consultancy Services <img src="img/tcs.jpg" alt="TCS Logo" class="company-logo"></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Mar 2022 – Present</div>
+          <div class="timeline-content">
+            <h3>Systems Engineer</h3>
+            <p class="company-name">Tata Consultancy Services <img src="img/tcs.jpg" alt="TCS Logo" class="company-logo"></p>
+             <ul>
+              <li>Working with end user and IT leads to understand business requirements; Design, develop and deploy the solution in Kinaxis RR.</li>
+              <li>Hands on experience in Authoring resources: Cross Tab/Workbooks/Composite Workbooks, Worksheet, Filters, Dashboards, Alerts, Forms, Scheduled Tasks and Automations.</li>
+              <li>Well versed on the concepts of Demand Planning, Capacity Planning, Yield, Forecast.</li>
+              <li>Well versed with Supply chain planning concepts and business process like 5 Year planning, Expiry Planning and MPS.</li>
+              <li>Responsible for techo-functional issues resolution in Supply and Demand Planning.</li>
+              <li>Worked on the update of RR to latest version covering pre/post tests, revision and documentation.</li>
+              <li>Hands on experience on User and Data Administration.</li>
+              <li>Hands on Data Model changes and its deployment and Data source and Mapping creation and updating.</li>
+              <li>Well versed with Scenario and Scenario management policies.</li>
+              <li>Worked on Scripts in Kinaxis RR.</li>
+              <li>Well versed with concepts of Netting, CTP and FLP.</li>
+              <li>Hands on experience on Data Integration from/to RR.</li>
+            </ul>
+          </div>
+        </div>
+        </div>
+    </section>
+
+    <section id="education" class="rounded shadow p-6" data-aos="fade-up">
+      <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-graduation-cap mr-2"></i>Education</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">APR 2016 – MAR 2020</div>
+          <div class="timeline-content">
+            <h3>B.E. Computer Science, 2020 <span class="percentage">- 86%</span></h3>
+            <p>Gnanamani College of Technology (First Class with Distinction)</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Mar 2015 – Mar 2016</div>
+          <div class="timeline-content">
+            <h3>Higher Secondary <span class="percentage">- 90%</span></h3>
+            <p>Sri Vidhya Mandhir Higher Secondary School</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2014</div>
+          <div class="timeline-content">
+            <h3>SSLC <span class="percentage">- 97%</span></h3>
+            <p>Merlion Matriculation School, Mallur</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="certifications" class="rounded shadow p-6" data-aos="fade-up">
+      <h2 class="text-2xl font-semibold mb-4"><i class="fas fa-certificate mr-2"></i>Certifications</h2>
+      <ul class="certifications-list">
+        <li>
+            <i class="fas fa-award"></i>
+            <a class="text-blue-600 underline" href="https://www.credly.com/badges/c133d9bc-fce7-400b-9721-15b3737afa56/public_url" target="_blank">Solution Consultant Level 1</a>
+            <img src="img/sc1.png" alt="Certification Badge 1" class="certification-badge">
+        </li>
+        <li>
+            <i class="fas fa-award"></i>
+            <a class="text-blue-600 underline" href="https://www.credly.com/badges/c133d9bc-fce7-400b-9721-15b3737afa56/public_url" target="_blank">Integration Consultant Level 1</a>
+            <img src="img/il1.png" alt="Certification Badge 2" class="certification-badge">
+        </li>
+        <li>
+            <i class="fas fa-award"></i>
+            <a class="text-blue-600 underline" href="https://www.credly.com/badges/4f2a2793-c5aa-46ed-8133-5f5bc170f20a/public_url" target="_blank">Certified Associate Python Programmer</a>
+            <img src="img/pcap.png" alt="Certification Badge 3" class="certification-badge">
+        </li>
+         <li>
+            <i class="fas fa-award"></i>
+            <a class="text-blue-600 underline" href="https://www.credly.com/badges/a8324615-e3e3-469f-ba0a-89c9cb318bf4/public_url" target="_blank">Author Level 3</a>
+            <img src="img/a3.png" alt="Certification Badge 4" class="certification-badge">
+        </li>
+        <li>
+            <i class="fas fa-external-link-alt"></i>
+            <a class="text-blue-600 underline" href="https://www.credly.com/users/bharathkumar-srinivasan" target="_blank">More Certifications on Credly</a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="awards" class="rounded shadow p-6" data-aos="fade-up">
+      <h2 class="text-2xl font-semibold mb-6"><i class="fas fa-trophy mr-2"></i>Awards</h2>
+      <div class="awards-grid">
+        <div class="award-item">
+            <i class="fas fa-star"></i>
+            <p>Elevate Wings Award</p>
+        </div>
+        <div class="award-item">
+            <i class="fas fa-star"></i>
+            <p>Exceptional Performance Award</p>
+        </div>
+        <div class="award-item">
+            <i class="fas fa-star"></i>
+            <p>Star of the Month</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center text-sm text-gray-500 p-4 mt-10" data-aos="fade-up">
+    &copy; 2025 Bharathkumar Srinivasan. All rights reserved.
+  </footer>
+</body>
+</html>
