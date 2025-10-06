@@ -448,18 +448,6 @@
       } else {
          document.body.style.overflow = 'auto';
       }
-      // Visitor Counter
-      const visitCountSpan = document.getElementById('visitor-count');
-      let count = localStorage.getItem('visitorCount');
-
-      if (count) {
-        count = parseInt(count, 10) + 1;
-      } else {
-        count = 1;
-      }
-
-      localStorage.setItem('visitorCount', count);
-      visitCountSpan.textContent = count;
     });
   </script>
 </head>
@@ -671,9 +659,9 @@
 
   <footer class="text-center text-sm text-gray-500 p-4 mt-10" data-aos="fade-up">
     &copy; 2025 Bharathkumar Srinivasan. All rights reserved.
-    <p>Visitor Count: <span id="visitor-count">0</span></p>
   </footer>
 </body>
 </html>
+
 
 
